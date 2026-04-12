@@ -6,6 +6,7 @@ const _config = {
     BYPASS_AUTH: process.env.BYPASS_AUTH || "false",
     TEST_USER_EMAIL: process.env.TEST_USER_EMAIL || "your-test-email",
     FRONTEND_URL: process.env.FRONTEND_URL || "http://localhost:3000",
+    BCRYPT_SALT_ROUNDS: process.env.BCRYPT_SALT_ROUNDS || 12
 }
 
 
