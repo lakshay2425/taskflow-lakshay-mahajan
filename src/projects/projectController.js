@@ -57,11 +57,8 @@ export const getProjectTasks = asyncHandler(async (req, res, next) => {
 
 
 export const createProject = asyncHandler(async (req, res, next) => {
-    console.log("Schema:", createProjectSchema);
     const parsed = createProjectSchema.safeParse(req.body);
-    console.log("Parsed:", JSON.stringify(parsed));
     if (!parsed.success) {
-        console.log("Zod issues:", JSON.stringify(parsed.error?.issues));
         const fields = Object.fromEntries(
             (parsed.error?.issues || []).map((e) => [
                 e.path.length > 0 ? e.path.join('.') : e.code,
@@ -70,16 +67,15 @@ export const createProject = asyncHandler(async (req, res, next) => {
         );
         return res.status(400).json({ error: 'validation failed', fields });
     }
-    console.log("Calling Service funciton")
     const result = await createProjectService(parsed.data, req.user.user_id, dependencies);
-    console.log("Return error or sccess resppsne")
     if (!result.success) return next(createHttpError(result.status, result.message));
     returnResponse("Project created successfully", res, 201, result.data);
 });
 
 export const updateProjectInfo = asyncHandler(async (req, res, next) => {
+    const bodyData = req.body || {};
     const filtered = Object.fromEntries(
-        Object.entries(req.body).filter(([key]) => PROJECT_ALLOWED_UPDATE_FIELDS.includes(key))
+        Object.entries(bodyData).filter(([key]) => PROJECT_ALLOWED_UPDATE_FIELDS.includes(key))
     );
 
     if (Object.keys(filtered).length === 0) {
@@ -120,7 +116,6 @@ export const deleteProject = asyncHandler(async (req, res, next) => {
 export const createProjectTask = asyncHandler(async (req, res, next) => {
     const parsed = createTaskSchema.safeParse(req.body);
     if (!parsed.success) {
-        console.log("Zod issues:", JSON.stringify(parsed.error?.issues));
         const fields = Object.fromEntries(
             (parsed.error?.issues || []).map((e) => [
                 e.path.length > 0 ? e.path.join('.') : e.code,
