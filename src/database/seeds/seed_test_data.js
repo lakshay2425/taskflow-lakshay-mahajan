@@ -27,21 +27,24 @@ export const seed = async function(knex) {
       status: 'done', 
       priority: 'high', 
       project_id: project.id, 
-      assignee_id: user.id 
+      assignee_id: user.id,
+      created_by: user.id,
     },
     { 
       title: 'Implement Auth', 
       status: 'in_progress', 
       priority: 'medium', 
       project_id: project.id, 
-      assignee_id: user.id 
+      assignee_id: user.id,
+      created_by: user.id,
     },
     { 
       title: 'Write Unit Tests', 
       status: 'todo', 
       priority: 'low', 
       project_id: project.id, 
-      assignee_id: null 
+      assignee_id: null,
+      created_by: user.id,
     }
   ]);
 };
