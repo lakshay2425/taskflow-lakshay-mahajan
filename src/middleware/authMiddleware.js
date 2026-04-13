@@ -1,9 +1,9 @@
 import { config } from "../config/config.js"
 import createHttpError from 'http-errors'
 import jwt from "jsonwebtoken";
+
 const jwtSecret = config.get("JWT_SECRET");
 const environment = config.get("NODE_ENVIRONMENT");
-
 
 const verifyAuthStatus = async (req, res, next) => {
     try {
@@ -19,12 +19,13 @@ const verifyAuthStatus = async (req, res, next) => {
             algorithms: ["HS256"]
         });
 
-        if (!decoded || typeof decoded === "string" || !('userInfo' in decoded)) return next(createHttpError(400, "You're unauthorized to access this resource"));
+        if (!decoded || typeof decoded === "string" || !decoded.user_id || !decoded.email) {
+            return next(createHttpError(401, "You're unauthorized to access this resource"));
+        }
 
-        // Add user info to request object
         req.user = {
-            userId: decoded.sub,
-            email: decoded.userInfo.email,
+            user_id: decoded.user_id,   
+            email: decoded.email,      
         };
 
         next();
@@ -40,12 +41,11 @@ const verifyAuthStatus = async (req, res, next) => {
     }
 };
 
-
 export const optionalAuth = async (req, res, next) => {
     if (environment === "development" && config.get("BYPASS_AUTH") === 'true') {
         req.user = {
-            role: "admin",
-            userId: "69cfaf4cd681a6a77b076222"
+            user_id: "69cfaf4cd681a6a77b076222", 
+            email: "dev@bypass.com",
         }
         return next();
     }
