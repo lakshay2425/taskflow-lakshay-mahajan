@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import {config} from './src/config/config.js';
 import indexRouter from "./src/indexRoutes.js"
-import cookieParser from 'cookie-parser';
 import { v4 as uuidv4 } from 'uuid';
 import { globalErrorHandler } from './src/middleware/globalErrorHandler.js';
 const app = express();
@@ -22,10 +21,12 @@ app.use(cors({
   methods: ['GET', 'POST', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'withCredentials', 'X-Requested-With','Accept'],
 }));
-app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use((_req, res, next) => {
+    res.setHeader('Content-Type', 'application/json');
+    next();
+});
 // Request ID middleware - adds unique ID to each request
 app.use((req, res, next) => {
   req.requestId = uuidv4();
