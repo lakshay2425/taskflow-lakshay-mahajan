@@ -1,11 +1,11 @@
 import createHttpError from "http-errors";
 import { signupUser, verifyLogin } from "./authService.js";
-import db from "../config/db.js";
+import { db } from "../config/db.js";
 import bcrypt from "bcrypt";
 import { config } from "../config/config.js";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from 'uuid';
-import { asyncHandler } from "../utilis/advanceFunctions.js";
+import { asyncHandler } from "../utils/advanceFunctions.js";
 import { loginSchema, signupSchema } from "../validationSchemas/user.js";
 import { ERROR_MESSAGES } from "../validationSchemas/error.js";
 
