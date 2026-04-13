@@ -1,18 +1,10 @@
 import express from 'express'
+import { validateUUID } from '../middleware/validateUUID.js';
+import { requireTaskAccess } from '../middleware/ownershipMiddleware.js';
+import { updateTask, deleteTask } from './taskController.js';
 const router = express.Router();
 
-router.patch("/:id", (req, res) => {
-    //Update title, description, status, priority, assignee, due_date
-    res.status(200).json({
-        message: "Update task route"
-    })
-});
-
-router.delete("/:id", (req, res) => {
-    //Delete task (project owner or task creator only)
-    res.status(200).json({
-        message: "Delete task route"
-    })
-});
+router.patch("/:id", validateUUID('id'), requireTaskAccess, updateTask);
+router.delete("/:id", validateUUID('id'), requireTaskAccess, deleteTask);
 
 export default router;
