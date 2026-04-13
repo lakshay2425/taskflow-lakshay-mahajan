@@ -4,12 +4,20 @@ export const asyncHandler =  (fn) => {
     });
 };
 
-//Database operation wrapper
 export const dbOperation = async (operation, errorMessage) => {
     try {
         return await operation();
     } catch (error) {
         console.error(`DB Error: ${errorMessage}`, error.message);
+        if (error.code === '55P03') {
+            throw createError('Resource is currently being modified, please retry', 409);
+        }
+        if (error.code === '23505') {
+            throw createError('Resource already exists', 409);
+        }
+        if (error.code === '23503') {
+            throw createError('Referenced resource does not exist', 400);
+        }
         throw createError(errorMessage, 500);
     }
 };
