@@ -1,54 +1,16 @@
 import express from 'express';
+import { createProject, createProjectTask, deleteProject, getProjectList, getProjectStats, getProjectTask, getProjectTasks,  updateProjectInfo } from './projectController.js';
+import { validateUUID } from '../middleware/validateUUID.js';
+import { requireProjectOwner } from '../middleware/ownershipMiddleware.js';
 const router = express.Router();
 
-router.get("/", (req, res) => {
-    //List projects the current user owns or has tasks in
-    res.status(200).json({
-        message: "Project route"
-    })
-})
-
-router.get("/:id", (req, res) => {
-    //Get project details + its tasks
-    res.status(200).json({
-        message: "Get project by ID route"
-    })
-});
-
-
-router.post("/", (req, res) => {
-    //Create a project (owner = current user)
-    res.status(200).json({
-        message: "Create project route"
-    })
-})
-
-router.patch("/:id", (req, res) => {
-    //Update name/description (owner only)
-    res.status(200).json({
-        message: "Update project route"
-    })
-});
-
-router.delete("/:id", (req, res) => {
-    //Delete project and all its tasks (owner only)
-    res.status(200).json({
-        message: "Delete project route"
-    })
-})
-
-router.get("/:id/tasks", (req, res) => {
-    //Support ?status and ?assignee filters
-    res.status(200).json({
-        message: "Get tasks for project route"
-    })
-});
-
-router.post("/:id/tasks", (req, res) => {
-    //Create a task
-    res.status(200).json({
-        message: "Create task for project route"
-    })
-})
+router.get("/", getProjectList);
+router.post("/", createProject);
+router.get("/:id", validateUUID('id'), getProjectTask);
+router.patch("/:id", validateUUID('id'), requireProjectOwner, updateProjectInfo);
+router.delete("/:id", validateUUID('id'), requireProjectOwner, deleteProject);
+router.get("/:id/tasks", validateUUID('id'), getProjectTasks);
+router.post("/:id/tasks", validateUUID('id'), createProjectTask);
+router.get('/:id/stats', validateUUID('id'), requireProjectOwner, getProjectStats); 
 
 export default router;
