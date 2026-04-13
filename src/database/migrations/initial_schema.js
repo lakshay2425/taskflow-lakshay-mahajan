@@ -1,5 +1,3 @@
-// src/database/migrations/20260411_initial_schema.js
-
 export const up = async function(knex) {
   await knex.raw('CREATE EXTENSION IF NOT EXISTS "pgcrypto"');
 
@@ -37,8 +35,13 @@ export const up = async function(knex) {
         .references('id')
         .inTable('users')
         .onDelete('SET NULL');
+      table.uuid('created_by')         
+        .references('id')
+        .inTable('users')
+        .onDelete('SET NULL')
+        .notNullable();
       table.date('due_date');
-      table.timestamps(true, true); // Adds created_at and updated_at automatically
+      table.timestamps(true, true);
     });
 };
 
