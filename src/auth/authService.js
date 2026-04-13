@@ -1,11 +1,11 @@
 export const verifyLogin = async (inputValidation, dependencies) => {
-    const { db, bcrypt, jwt, uuidv4, secret , saltRounds} = dependencies;
+    const { db, bcrypt, jwt, uuidv4, secret, saltRounds } = dependencies;
     const email = inputValidation.email.toLowerCase();
 
     const userData = await db('users').where({ email }).first();
 
     const userPassword = userData?.password || await bcrypt.hash(uuidv4(), saltRounds);
-    
+
     const verify = await bcrypt.compare(inputValidation.password, userPassword);
 
     if (!verify || !userData) {
@@ -17,11 +17,12 @@ export const verifyLogin = async (inputValidation, dependencies) => {
     }
 
     const tokenResponse = await createJwtToken(userData, { secret, jwt });
-    
+
     return {
         success: tokenResponse.success,
         status: tokenResponse.success ? 200 : 500,
         token: tokenResponse.token,
+        message: tokenResponse.message || "Token generation failed",
     };
 };
 
@@ -53,12 +54,13 @@ export const signupUser = async (inputValidation, dependencies) => {
     return {
         success: true,
         token: tokenResponse.token,
+        message: tokenResponse.message || "Token generation failed",
     };
 };
 
 const createJwtToken = async (user, dependencies) => {
     const { secret, jwt } = dependencies;
-    
+
     const payload = {
         user_id: user.id,
         email: user.email

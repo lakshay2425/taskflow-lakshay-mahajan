@@ -11,14 +11,12 @@ import { ERROR_MESSAGES } from "../validationSchemas/error.js";
 
 const secret = config.get("JWT_SECRET");
 const saltRounds = Number(config.get("BCRYPT_SALT_ROUNDS"));
-export const userLogin = asyncHandler(async (req, res, next) => {
-    const { email, password } = req.body;
 
-    const inputValidation = loginSchema.safeParse({ email, password });
+export const userLogin = asyncHandler(async (req, res, next) => {
+    const inputValidation = loginSchema.safeParse(req.body);
     if (!inputValidation.success) {
         return next(createHttpError(400, ERROR_MESSAGES.LOGIN.INVALID_INPUT));
     }
-
 
     const loginInfo = await verifyLogin(inputValidation.data, {
         bcrypt, db, jwt, uuidv4, secret, saltRounds
