@@ -1,4 +1,12 @@
 # TaskFlow — Minimal Task Management System
+This project is a **backend-only implementation** of TaskFlow. It includes a complete REST API with authentication, project management, and task handling. No frontend is included.
+
+**For Backend-only submissions, the evaluation focuses on:**
+- API correctness and design
+- Authentication & authorization
+- Database schema & migrations
+- Error handling & validation
+- Docker setup & documentation
 
 ## Overview
 
