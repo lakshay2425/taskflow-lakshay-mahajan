@@ -8,8 +8,9 @@ import { updateTaskSchema, TASK_ALLOWED_UPDATE_FIELDS } from '../validationSchem
 const dependencies = { db };
 
 export const updateTask = asyncHandler(async (req, res, next) => {
+    const bodyData = req.body || {};
     const filtered = Object.fromEntries(
-        Object.entries(req.body).filter(([key]) => TASK_ALLOWED_UPDATE_FIELDS.includes(key))
+        Object.entries(bodyData).filter(([key]) => TASK_ALLOWED_UPDATE_FIELDS.includes(key))
     );
 
     if (Object.keys(filtered).length === 0) {

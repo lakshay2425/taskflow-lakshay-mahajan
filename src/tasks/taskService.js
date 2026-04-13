@@ -50,9 +50,6 @@ export const createTask = async (projectId, inputData, userId, dependencies) => 
         'Failed to fetch project'
     );
     if (!project) return { success: false, status: 404, message: 'Project not found' };
-    console.log('project:', project);
-    console.log('userId:', userId);
-    console.log('inputData:', inputData);
     const task = await dbOperation(
         () => db('tasks')
             .insert({
